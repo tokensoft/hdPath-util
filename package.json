@@ -7,7 +7,8 @@
     "dev": "backpack",
     "build": "backpack build",
     "start": "node ./build/main.js",
-    "eject": "pkg ./build/main.js --out-path ./executables"
+    "pkg": "pkg ./build/main.js --out-path ./executables",
+    "eject": "npm run build && npm run pkg"
   },
   "devDependencies": {
     "backpack-core": "^0.7.0",
@@ -17,6 +18,9 @@
     "@ledgerhq/hw-app-eth": "^4.7.3",
     "@ledgerhq/hw-transport-node-hid": "^4.7.6",
     "bluebird": "^3.5.1",
-    "meow": "^4.0.0"
+    "prompt": "^1.0.0"
+  },
+  "pkg": {
+    "assets": "build/**/*.map"
   }
 }
