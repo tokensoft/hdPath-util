@@ -15,23 +15,17 @@ const getEthAddressFactory = async () => {
   const transport = await Transport.create()
   const eth = new Eth(transport)
 
-  return (async (hdPath) => {
-    console.debug('    looking for address at path', hdPath)
+  return async (hdPath) => {
     const result = await eth.getAddress(hdPath)
-    console.debug('    found address:', result.address)
     return result.address
-  })
+  }
 }
 
 const getEthAddressPath = async (address, hdPaths, getEthAddress) => {
   for (let hdPath of hdPaths) {
     try {
-      console.debug('  current hdPath:', hdPath)
       const foundAddress = await getEthAddress(hdPath)
-      if (address.toLowerCase() === foundAddress.toLowerCase()) {
-        console.log('  !!! A MATCH !!!')
-        return hdPath
-      }
+      if (address.toLowerCase() === foundAddress.toLowerCase()) return hdPath
     } catch (err) { /* noop */ }
   }
   return 'No path found'
@@ -52,14 +46,14 @@ const run = async (err, { addresses: _addresses, indexDepth: _indexDepth }) => {
 
   const getEthAddress = await getEthAddressFactory()
 
+  console.log("\nSearching...\n")
   const results = await Promise.reduce(addresses, async (result, address) => {
-    console.debug('searching address:', address)
     const pathResult = await getEthAddressPath(address, hdPaths, getEthAddress)
-    console.debug('result:', pathResult, '\n')
     result[address] = pathResult
     return result
   }, {})
 
+  console.log("Results:")
   console.log(JSON.stringify(results, null, 2))
 }
 
@@ -84,7 +78,7 @@ prompt.get([
   },
   {
     name: 'indexDepth',
-    message: 'Enter the number of indexes you wish to search, default is 5',
+    description: 'Enter the number of indexes you wish to search, default is 5',
     type: 'number',
     default: '5'
   }
