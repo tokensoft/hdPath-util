@@ -1,7 +1,7 @@
 import Promise from "bluebird"
 import Eth from "@ledgerhq/hw-app-eth"
 import Transport from "@ledgerhq/hw-transport-node-hid"
-import meow from "meow"
+import prompt from "prompt"
 
 const basePaths = [
   "44'/60'/0'",         // Ledger (ETH)
@@ -37,9 +37,9 @@ const getEthAddressPath = async (address, hdPaths, getEthAddress) => {
   return 'No path found'
 }
 
-const runAsync = async ({ a: addressesString, i: indexDepthString }) => {
-  const addresses = addressesString.split(',').map(s => s.trim())
-  const indexDepth = parseInt(indexDepthString)
+const run = async (err, { addresses: _addresses, indexDepth: _indexDepth }) => {
+  const addresses = _addresses.map(s => s.trim())
+  const indexDepth = parseInt(_indexDepth)
 
   const indexRange = []
   for (let i = 0; i < indexDepth; i++) indexRange.push(i)
@@ -63,33 +63,6 @@ const runAsync = async ({ a: addressesString, i: indexDepthString }) => {
   console.log(JSON.stringify(results, null, 2))
 }
 
-const cli = meow(
-  `
-  Usage
-    $ -a 0x3721d521C67b2C436170EDC7a3cd9b22758C6471 -i 10
-
-  Options
-    --address(es),  -a    A comma separated list of addresses you wish to search for
-    --index-depth,  -i    The number of indexes you'd like to search along each hdPath
-  `,
-  {
-    flags: {
-      'addresses': {
-        type: 'string',
-        alias: 'a',
-        default: '0x3721d521C67b2C436170EDC7a3cd9b22758C6471, 0xcda11d5a0D0e640F456df83b0510035d03b0DA6E, 0xb5cf953Eac885fA492E9a544A75847138A4c2838, 0x26115228e790B9D4F53FbBB5C3b057106dddFF6d'
-        // Keep Network multisig owners [Corbin, Sean, Matt]
-        // default: '0x8699e6FB85f132960b88a4b710c608C152C98aBc, 0xC54A7B2bA647EEd78E42F785a97313e98B70c0Cd, 0xE52E028f0D8F2E7A9d78E48199234b1231774E6a'
-      },
-      'index-depth': {
-        type: 'string',
-        alias: 'i',
-        default: '5'
-      }
-    }
-  }
-)
-
 console.log(
   "Ledger must be:\n",
   "  - plugged in\n",
@@ -99,5 +72,20 @@ console.log(
   "    - Contract data -> Yes\n",
   "    - Browser support -> No\n"
 )
-
-runAsync(cli.flags)
+prompt.start()
+prompt.get([
+  {
+    name: 'addresses',
+    type: 'array',
+    description: "Enter a list of addresses to lookup, use ctrl-c to continue",
+    minItems: 1,
+    default: [],
+    required: true
+  },
+  {
+    name: 'indexDepth',
+    message: 'Enter the number of indexes you wish to search, default is 5',
+    type: 'number',
+    default: '5'
+  }
+], run)
