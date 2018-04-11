@@ -5,10 +5,10 @@ import meow from "meow"
 
 const basePaths = [
   "44'/60'/0'",         // Ledger (ETH)
-  "44'/60'/160720'/0'", // Ledger (ETC)
-  "44'/60'/0'/0",       // TREZOR (ETH)
-  "44'/61'/0'/0",       // TREZOR (ETC)
-  "44'/60'/1'/0"        // MEW - "Your Custom Path"
+  // "44'/60'/160720'/0'", // Ledger (ETC)
+  // "44'/60'/0'/0",       // TREZOR (ETH)
+  // "44'/61'/0'/0",       // TREZOR (ETC)
+  // "44'/60'/1'/0"        // MEW - "Your Custom Path"
 ]
 
 const getEthAddress = async (hdPath) => {
@@ -33,7 +33,7 @@ const getEthAddressPath = async (address, hdPaths) => {
   return 'No paths found'
 }
 
-const run = async ({ a: addressesString, i: indexDepthString }) => {
+const runAsync = async ({ a: addressesString, i: indexDepthString }) => {
   const addresses = addressesString.split(',').map(s => s.trim())
   const indexDepth = parseInt(indexDepthString)
 
@@ -84,4 +84,4 @@ const cli = meow(
   }
 )
 
-run(cli.flags)
+runAsync(cli.flags)
