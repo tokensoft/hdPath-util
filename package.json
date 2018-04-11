@@ -1,0 +1,20 @@
+{
+  "name": "hdPath-util",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "backpack",
+    "build": "backpack build",
+    "start": "node ./build/main.js",
+    "eject": "pkg ./build/main.js --out-path ./executables"
+  },
+  "devDependencies": {
+    "backpack-core": "^0.7.0",
+    "pkg": "^4.3.1"
+  },
+  "dependencies": {
+    "@ledgerhq/hw-app-eth": "^4.7.3",
+    "meow": "^4.0.0"
+  }
+}
